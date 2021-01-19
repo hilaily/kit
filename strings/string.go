@@ -14,7 +14,17 @@ func BytesToString(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-// StringPointer
-func StringPointer(input string) *string {
+// Pointer return a address of a string
+func Pointer(input string) *string {
 	return &input
+}
+
+// Has represent if a element is in the list
+func Has(list []string, element string) bool {
+	for _, v := range list {
+		if v == element {
+			return true
+		}
+	}
+	return false
 }
