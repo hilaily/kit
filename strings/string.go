@@ -1,6 +1,13 @@
 package strings
 
-import "unsafe"
+import (
+	"regexp"
+	"unsafe"
+)
+
+var (
+	compresReg *regexp.Regexp
+)
 
 // StringToBytes
 func StringToBytes(s string) []byte {
@@ -27,4 +34,16 @@ func Has(list []string, element string) bool {
 		}
 	}
 	return false
+}
+
+// Compress for trim space in string
+func Compress(str string) string {
+	if str == "" {
+		return str
+	}
+	//匹配一个或多个空白符的正则表达式
+	if compresReg == nil {
+		compresReg = regexp.MustCompile("\\s+")
+	}
+	return compresReg.ReplaceAllString(str, "")
 }
