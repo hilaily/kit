@@ -10,7 +10,6 @@ import (
 // NewFormBody represent create a http form data request
 // @param params represent fields
 // @param files represent update files
-// https://zhuanlan.zhihu.com/p/96491484
 func NewFormBody(params map[string]string, files []*FileInfo) (contentType string, body io.Reader, err error) {
 	buf := &bytes.Buffer{}
 	writer := multipart.NewWriter(buf)
