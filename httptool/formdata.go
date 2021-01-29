@@ -17,7 +17,8 @@ func NewFormBody(params map[string]string, files []*FileInfo) (contentType strin
 	defer writer.Close()
 
 	for _, v := range files {
-		fileWriter, err := writer.CreateFormFile(v.Fieldname, v.Filename)
+		var fileWriter io.Writer
+		fileWriter, err = writer.CreateFormFile(v.Fieldname, v.Filename)
 		if err != nil {
 			err = fmt.Errorf("[httptool], write file field, key: %s, val: %s, %w", v.Fieldname, v.Filename, err)
 			return

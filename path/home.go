@@ -22,7 +22,7 @@ func GetHome() (string, error) {
 
 	// cross compile support
 
-	if "windows" == runtime.GOOS {
+	if runtime.GOOS == "windows" {
 		return homeWindows()
 	}
 
