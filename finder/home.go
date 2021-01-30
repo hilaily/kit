@@ -1,4 +1,4 @@
-package path
+package finder
 
 import (
 	"bytes"
@@ -10,18 +10,15 @@ import (
 	"strings"
 )
 
-// 代码来自 https://88250.b3log.org/golang-get-user-home-dir
-
-// GetHome 返回当前用户的 home 目录
-// 如果没有找到 home 目录则放回 error
+// GetHome return the home directory for current user
+// if not found home directory return error
 func GetHome() (string, error) {
-	user, err := user.Current()
+	_user, err := user.Current()
 	if nil == err {
-		return user.HomeDir, nil
+		return _user.HomeDir, nil
 	}
 
 	// cross compile support
-
 	if runtime.GOOS == "windows" {
 		return homeWindows()
 	}
