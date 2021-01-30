@@ -14,10 +14,11 @@ func NewFormBody(params map[string]string, files []*FileInfo) (contentType strin
 	buf := &bytes.Buffer{}
 	writer := multipart.NewWriter(buf)
 
-	defer writer.Close()
-
 	for _, v := range files {
 		var fileWriter io.Writer
+		if x, ok := v.Data.(io.Closer); ok {
+			defer x.Close()
+		}
 		fileWriter, err = writer.CreateFormFile(v.Fieldname, v.Filename)
 		if err != nil {
 			err = fmt.Errorf("[httptool], write file field, key: %s, val: %s, %w", v.Fieldname, v.Filename, err)
@@ -37,6 +38,7 @@ func NewFormBody(params map[string]string, files []*FileInfo) (contentType strin
 			return
 		}
 	}
+	writer.Close()
 
 	return writer.FormDataContentType(), buf, nil
 }
