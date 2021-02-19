@@ -1,7 +1,9 @@
 package strings
 
 import (
+	"path"
 	"regexp"
+	stdstrings "strings"
 	"unsafe"
 )
 
@@ -46,4 +48,10 @@ func Compress(str string) string {
 		compresReg = regexp.MustCompile("\\s+")
 	}
 	return compresReg.ReplaceAllString(str, "")
+}
+
+// URLJoin like strings.Join but for url path
+func URLJoin(base string, paths ...string) string {
+	p := path.Join(paths...)
+	return stdstrings.TrimRight(base, "/") + "/" + stdstrings.TrimLeft(p, "/")
 }

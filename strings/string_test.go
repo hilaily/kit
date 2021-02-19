@@ -19,3 +19,19 @@ b c`, expect: "abc"},
 		}
 	}
 }
+
+func TestURLJoin(t *testing.T) {
+	data := [][]string{
+		{"http://a.com/", "/b", "/c"},
+		{"http://a.com/", "b/", "/c"},
+		{"http://a.com", "/b", "c"},
+		{"http://a.com", "b", "/c"},
+	}
+	expect := "http://a.com/b/c"
+	for _, v := range data {
+		e := URLJoin(v[0], v[1:]...)
+		if e != expect {
+			t.Errorf("err: res %s, %v, %s\n", e, v[0], v[0:])
+		}
+	}
+}
