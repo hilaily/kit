@@ -1,4 +1,4 @@
-package httptool
+package httpx
 
 import (
 	"encoding/json"

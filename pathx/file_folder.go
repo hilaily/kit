@@ -1,8 +1,20 @@
-package finder
+package pathx
 
 import (
 	"os"
 )
+
+// IsExist if a file or path is exist
+func IsExist(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	return true
+}
 
 // NewEntiry ...
 func NewEntity(path string) *Entity {
