@@ -2,6 +2,7 @@ package pathx
 
 import (
 	"os"
+	"path/filepath"
 )
 
 // IsExist if a file or path is exist
@@ -14,6 +15,24 @@ func IsExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func ChmodR(name string, mode os.FileMode) error {
+	return filepath.Walk(name, func(path string, info os.FileInfo, err error) error {
+		if err == nil {
+			err = os.Chmod(path, mode)
+		}
+		return err
+	})
+}
+
+func ChownR(path string, uid, gid int) error {
+	return filepath.Walk(path, func(name string, info os.FileInfo, err error) error {
+		if err == nil {
+			err = os.Chown(name, uid, gid)
+		}
+		return err
+	})
 }
 
 // NewEntiry ...
