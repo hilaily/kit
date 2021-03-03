@@ -14,7 +14,9 @@ func Get(schemaHostPath string, params *url.Values, headers map[string]string, d
 	if err != nil {
 		return nil, fmt.Errorf("[httptool], parse url, %w", err)
 	}
-	_url.RawQuery = params.Encode()
+	if params != nil {
+		_url.RawQuery = params.Encode()
+	}
 	_req, err := http.NewRequest(http.MethodGet, _url.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("[httptool], make request, %w", err)
@@ -26,7 +28,9 @@ func Get(schemaHostPath string, params *url.Values, headers map[string]string, d
 	if err != nil {
 		return nil, fmt.Errorf("[httptool], send request, %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 	return HandleResp(resp, dst)
 }
 
