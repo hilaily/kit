@@ -1,6 +1,10 @@
 package stringx
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestCompress(t *testing.T) {
 	data := []struct {
@@ -34,4 +38,13 @@ func TestURLJoin(t *testing.T) {
 			t.Errorf("err: res %s, %v, %s\n", e, v[0], v[0:])
 		}
 	}
+}
+
+func TestAddURLSchema(t *testing.T) {
+	assert.Equal(t, "http://a/b", AddURLSchema("http://a/b", "http"))
+	assert.Equal(t, "http://a/b", AddURLSchema("http://a/b", "http"))
+	assert.Equal(t, "http://a/b", AddURLSchema("http://a/b", "http"))
+	assert.Equal(t, "http://a/b", AddURLSchema("a/b", "http://"))
+	assert.Equal(t, "http://a/b", AddURLSchema("a/b", "http"))
+	assert.Equal(t, "https://a/b", AddURLSchema("a/b", "https"))
 }

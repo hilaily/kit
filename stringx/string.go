@@ -3,7 +3,7 @@ package stringx
 import (
 	"path"
 	"regexp"
-	stdstrings "strings"
+	"strings"
 	"unsafe"
 )
 
@@ -53,5 +53,14 @@ func Compress(str string) string {
 // URLJoin like strings.Join but for url path
 func URLJoin(base string, paths ...string) string {
 	p := path.Join(paths...)
-	return stdstrings.TrimRight(base, "/") + "/" + stdstrings.TrimLeft(p, "/")
+	return strings.TrimRight(base, "/") + "/" + strings.TrimLeft(p, "/")
+}
+
+// AddURLShceme if url do not have scheme then add one
+// sheme should have ://
+func AddURLSchema(url string, scheme string) string {
+	if !strings.HasPrefix(url, "http") {
+		return strings.TrimRight(scheme, "://") + "://" + url
+	}
+	return url
 }
