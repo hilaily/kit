@@ -21,12 +21,12 @@ func NewFormBody(params map[string]string, files []*FileInfo) (contentType strin
 		}
 		fileWriter, err = writer.CreateFormFile(v.Fieldname, v.Filename)
 		if err != nil {
-			err = fmt.Errorf("[httptool], write file field, key: %s, val: %s, %w", v.Fieldname, v.Filename, err)
+			err = fmt.Errorf("[httpx], write file field, key: %s, val: %s, %w", v.Fieldname, v.Filename, err)
 			return
 		}
 		_, err = io.Copy(fileWriter, v.Data)
 		if err != nil {
-			err = fmt.Errorf("[httptool], write file, key: %s, val: %s, %w", v.Fieldname, v.Filename, err)
+			err = fmt.Errorf("[httpx], write file, key: %s, val: %s, %w", v.Fieldname, v.Filename, err)
 			return
 		}
 	}
@@ -34,11 +34,11 @@ func NewFormBody(params map[string]string, files []*FileInfo) (contentType strin
 	for k, v := range params {
 		err = writer.WriteField(k, v)
 		if err != nil {
-			err = fmt.Errorf("[httptool], write field, key: %s, val: %s, %w", k, v, err)
+			err = fmt.Errorf("[httpx], write field, key: %s, val: %s, %w", k, v, err)
 			return
 		}
 	}
-	writer.Close()
+	_ = writer.Close()
 
 	return writer.FormDataContentType(), buf, nil
 }
