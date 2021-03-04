@@ -1,6 +1,7 @@
 package stringx
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -63,4 +64,23 @@ func TestDeDup(t *testing.T) {
 		res := Dedup(v.origin)
 		assert.Equal(t, v.expect, res)
 	}
+}
+
+func TestEncodePEM(t *testing.T) {
+	pem := []byte(`
+-----BEGIN CERTIFICATE-----
+MIIB1jCCAYCgAwIBAgIJAOuA44qosxpmMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
+BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
+aWRnaXRzIFB0eSBMdGQwHhcNMTkwNTEwMTAwNTAwWhcNMjAwNTA5MTAwNTAwWjBF
+MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50
+ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKRZ
+LqWvnwROzCw6Td/YG/EHaZHnlMkisS+ybk1YCXZyq2Tv8z/ikPMRmWp/WtU1knxC
+1VcPCiVIifQos9UNu1kCAwEAAaNTMFEwHQYDVR0OBBYEFDc9jbjXcS6oHuVuXsB9
+ZGWr39/FMB8GA1UdIwQYMBaAFDc9jbjXcS6oHuVuXsB9ZGWr39/FMA8GA1UdEwEB
+/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADQQBFHviM7xFJ3KUg4SPlBm1X2yyAXgQI
+oNjuH9WSGQhVm9PxmEZJZnoEpmqYc+tamytRMxLHbermRRaIuMHzQj/J
+-----END CERTIFICATE-----`)
+	res, err := EncodePEM([]byte(pem))
+	assert.NoError(t, err)
+	fmt.Printf("%q", res)
 }

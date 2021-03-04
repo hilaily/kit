@@ -1,6 +1,10 @@
 package stringx
 
 import (
+	"crypto/x509"
+	"encoding/pem"
+	"errors"
+	"fmt"
 	"path"
 	"regexp"
 	"strings"
@@ -80,4 +84,25 @@ func Dedup(s []string) []string {
 		}
 	}
 	return newArr
+}
+
+// EncodePEM encode a pem byte array to a string
+func EncodePEM(certPEM []byte) (string, error) {
+	block, _ := pem.Decode(certPEM)
+	if block == nil {
+		return "", errors.New("failed to parse certificate PEM")
+	}
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse certificate, %w", err)
+	}
+	publicKeyDer, err := x509.MarshalPKIXPublicKey(cert.PublicKey)
+	if err != nil {
+		return "", fmt.Errorf("marshal x509, %w", err)
+	}
+	publicKeyBlock := pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: publicKeyDer,
+	}
+	return string(pem.EncodeToMemory(&publicKeyBlock)), nil
 }
