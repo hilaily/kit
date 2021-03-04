@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/hilaily/kit/stringx"
 )
 
 // WrapHTTPProxy add a proxy for a http client
 func WrapHTTPProxy(client *http.Client, proxyURL string, insecure bool) (*http.Client, error) {
-	proxyURLIns, err := url.Parse(proxyURL)
+	proxyURLIns, err := url.Parse(stringx.AddURLSchema(proxyURL, "http"))
 	if err != nil {
-		return nil, fmt.Errorf("parse proxyURL: %s, %w", err)
+		return nil, fmt.Errorf("parse proxyURL: %s, %w", proxyURL, err)
 	}
 
 	transport := &http.Transport{}
