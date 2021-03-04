@@ -48,3 +48,19 @@ func TestAddURLSchema(t *testing.T) {
 	assert.Equal(t, "http://a/b", AddURLSchema("a/b", "http"))
 	assert.Equal(t, "https://a/b", AddURLSchema("a/b", "https"))
 }
+
+func TestDeDup(t *testing.T) {
+	data := []struct {
+		expect []string
+		origin []string
+	}{
+		{[]string{"1", "2", "3"}, []string{"1", "2", "3", "2", "1"}},
+		{[]string{"1", "2", "3"}, []string{"1", "2", "3"}},
+		{[]string{"1", "2", "3"}, []string{"1", "1", "2", "2", "3"}},
+		{[]string{}, []string{}},
+	}
+	for _, v := range data {
+		res := Dedup(v.origin)
+		assert.Equal(t, v.expect, res)
+	}
+}

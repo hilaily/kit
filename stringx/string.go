@@ -64,3 +64,20 @@ func AddURLSchema(url string, scheme string) string {
 	}
 	return url
 }
+
+// Dedup remove duplicate element in slice
+func Dedup(s []string) []string {
+	l := len(s)
+	uniq := make(map[string]struct{}, l)
+	newArr := make([]string, 0, l)
+	for _, v := range s {
+		_, ok := uniq[v]
+		if ok {
+			continue
+		} else {
+			newArr = append(newArr, v)
+			uniq[v] = struct{}{}
+		}
+	}
+	return newArr
+}
