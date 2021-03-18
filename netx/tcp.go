@@ -6,12 +6,11 @@ import (
 	"time"
 )
 
-func TCPPortIsOpen(host, port string, timeout int) (bool, error) {
-	return portIsOpen("tcp", host, port, timeout)
+func TCPPortIsOpen(addr string, timeout int) (bool, error) {
+	return portIsOpen("tcp", addr, timeout)
 }
 
-func portIsOpen(typ, host, port string, timeout int) (bool, error) {
-	addr := net.JoinHostPort(host, port)
+func portIsOpen(typ, addr string, timeout int) (bool, error) {
 	conn, err := net.DialTimeout(typ, addr, time.Duration(timeout)*time.Second)
 	if nil != err {
 		return false, fmt.Errorf("netx, TCPPortIsOpen, %w", err)
