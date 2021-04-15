@@ -25,6 +25,17 @@ func (c *OrderedMap) Get(key string) (interface{}, bool) {
 	return val, ok
 }
 
+// Range ...
+func (c *OrderedMap) Range(f func(k string, val interface{}) error) error {
+	for _, v := range *c {
+		err := f(v.Key, v.Val)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // MarshalJSON ...
 func (c *OrderedMap) MarshalJSON() ([]byte, error) {
 	buf := bytes.Buffer{}

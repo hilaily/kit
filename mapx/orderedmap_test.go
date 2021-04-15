@@ -6,6 +6,22 @@ import (
 	"testing"
 )
 
+func TestRange(t *testing.T) {
+	m := OrderedMap{}
+	m.Put("a", 1)
+	m.Put("b", 2)
+	m.Put("c", 3)
+
+	res := make([]int, 0)
+	m.Range(func(k string, val interface{}) error {
+		fmt.Println(k, val)
+		v, _ := val.(int)
+		res = append(res, v)
+		return nil
+	})
+	fmt.Println(res)
+}
+
 func TestMap(t *testing.T) {
 	m := OrderedMap{}
 	m.Put("a", 1)
