@@ -7,6 +7,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestToMap(t *testing.T) {
+	arr := []string{"1", "2", "3"}
+	m := ToMap(arr)
+	assert.Equal(t, len(m), len(arr))
+}
+
 func TestCompress(t *testing.T) {
 	data := []struct {
 		data   string

@@ -15,14 +15,14 @@ var (
 	compresReg *regexp.Regexp
 )
 
-// StringToBytes
+// StringToBytes ...
 func StringToBytes(s string) []byte {
 	x := (*[2]uintptr)(unsafe.Pointer(&s))
 	h := [3]uintptr{x[0], x[1], x[1]}
 	return *(*[]byte)(unsafe.Pointer(&h))
 }
 
-// BytesToString
+// BytesToString ...
 func BytesToString(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
@@ -60,7 +60,7 @@ func URLJoin(base string, paths ...string) string {
 	return strings.TrimRight(base, "/") + "/" + strings.TrimLeft(p, "/")
 }
 
-// AddURLShceme if url do not have scheme then add one
+// AddURLSchema if url do not have scheme then add one
 // sheme should have ://
 func AddURLSchema(url string, scheme string) string {
 	if !strings.HasPrefix(url, "http") {
@@ -105,4 +105,13 @@ func EncodePEM(certPEM []byte) (string, error) {
 		Bytes: publicKeyDer,
 	}
 	return string(pem.EncodeToMemory(&publicKeyBlock)), nil
+}
+
+// ToMap transfer a string slice to a map
+func ToMap(data []string) map[string]struct{} {
+	m := make(map[string]struct{}, len(data))
+	for _, v := range data {
+		m[v] = struct{}{}
+	}
+	return m
 }
