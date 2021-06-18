@@ -35,7 +35,22 @@ func ChownR(path string, uid, gid int) error {
 	})
 }
 
-// NewEntiry ...
+// AppendFile writes data to a file named by filename.
+// If the file does not exist, WriteFile creates it with permissions perm
+// (before umask).
+func AppendFile(filename string, data []byte, perm os.FileMode) error {
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, perm)
+	if err != nil {
+		return err
+	}
+	_, err = f.Write(data)
+	if err1 := f.Close(); err == nil {
+		err = err1
+	}
+	return err
+}
+
+// NewEntity ...
 func NewEntity(path string) *Entity {
 	n := &Entity{path: path}
 	return n
@@ -51,24 +66,24 @@ type Entity struct {
 }
 
 // IsDir ...
-func (n Entity) IsDir() bool {
+func (n *Entity) IsDir() bool {
 	n.initStat()
 	return n.isDir
 }
 
 // IsExist ...
-func (n Entity) Exist() bool {
+func (n *Entity) Exist() bool {
 	n.initStat()
 	return n.isExist
 }
 
 // Reload represent reread file from os
-func (n Entity) Reload() {
+func (n *Entity) Reload() {
 	n.isInit = false
 	n.initStat()
 }
 
-func (n Entity) initStat() {
+func (n *Entity) initStat() {
 	if !n.isInit {
 		stat, err := os.Stat(n.path)
 		if err != nil {
