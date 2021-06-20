@@ -44,6 +44,13 @@ func (c *CacheMap) Set(k string, v interface{}) {
 	c.lock.Unlock()
 }
 
+// SetWithTime set a key val with expire time
+func (c *CacheMap) SetWithTime(k string, v interface{}, t time.Time) {
+	c.lock.Lock()
+	c.m[k] = &val{t.Unix(), v}
+	c.lock.Unlock()
+}
+
 // Get 根据 key 获取 value
 //	@return interface{} value 值
 //	@return bool value 是否存在
