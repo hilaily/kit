@@ -1,4 +1,4 @@
-package store
+package storex
 
 import (
 	"encoding/json"
