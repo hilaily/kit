@@ -49,7 +49,7 @@ func Compress(str string) string {
 	}
 	//匹配一个或多个空白符的正则表达式
 	if compresReg == nil {
-		compresReg = regexp.MustCompile("\\s+")
+		compresReg = regexp.MustCompile(`\s+`)
 	}
 	return compresReg.ReplaceAllString(str, "")
 }
@@ -64,7 +64,7 @@ func URLJoin(base string, paths ...string) string {
 // sheme should have ://
 func AddURLSchema(url string, scheme string) string {
 	if !strings.HasPrefix(url, "http") {
-		return strings.TrimRight(scheme, "://") + "://" + url
+		return strings.TrimSuffix(scheme, "://") + "://" + url
 	}
 	return url
 }
