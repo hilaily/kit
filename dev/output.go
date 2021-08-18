@@ -2,13 +2,18 @@ package dev
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strings"
 )
 
 // CheckErr ...
-func CheckErr(err error) {
+func CheckErr(err error, msg ...string) {
 	if err != nil {
+		if len(msg) > 0 {
+			m := strings.Join(msg, ";")
+			err = fmt.Errorf("%w, %s", err, m)
+		}
 		panic(err)
 	}
 }
