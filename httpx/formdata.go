@@ -8,8 +8,9 @@ import (
 )
 
 // NewFormBody represent create a http form data request
-// @param params represent fields
-// @param files represent update files
+// Parameters
+//  params: represent fields
+//  files: represent update files
 func NewFormBody(params map[string]string, files []*FileInfo) (contentType string, body io.Reader, err error) {
 	buf := &bytes.Buffer{}
 	writer := multipart.NewWriter(buf)
