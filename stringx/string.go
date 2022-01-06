@@ -197,3 +197,15 @@ func ToMap(data []string) map[string]struct{} {
 	}
 	return m
 }
+
+// ZHToUnicode turn Chinese into unicode
+func ZHToUnicode(raw string) string {
+	textQuoted := strconv.QuoteToASCII(raw)
+	textUnquoted := textQuoted[1 : len(textQuoted)-1]
+	return textUnquoted
+}
+
+// UnicodeToZH turn unitcode into Chinese
+func UnicodeToZH(raw string) (string, error) {
+	return strconv.Unquote(strings.ReplaceAll(strconv.Quote(raw), `\\u`, `\u`))
+}

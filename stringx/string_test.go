@@ -7,6 +7,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestZHToUnit(t *testing.T) {
+	raw := "测试中文abc"
+	res := ZHToUnicode(raw)
+	t.Log(res)
+	r, err := UnicodeToZH(res)
+	assert.NoError(t, err)
+	t.Log(r)
+	assert.Equal(t, r, raw)
+}
+
 func TestToMap(t *testing.T) {
 	arr := []string{"1", "2", "3"}
 	m := ToMap(arr)
