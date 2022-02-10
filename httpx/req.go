@@ -14,9 +14,14 @@ func Get(schemaHostPath string, params *url.Values, headers map[string]string, d
 	if err != nil {
 		return nil, fmt.Errorf("[httpx], parse url, %w", err)
 	}
-	if params != nil {
-		_url.RawQuery = params.Encode()
+	q := _url.Query()
+	for k, v := range *params {
+		if len(v) > 0 {
+			q.Set(k, v[0])
+		}
 	}
+
+	_url.RawQuery = q.Encode()
 	_req, err := http.NewRequest(http.MethodGet, _url.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("[httpx], make request, %w", err)

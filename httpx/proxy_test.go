@@ -11,7 +11,7 @@ func TestWrapHTTPProxy(t *testing.T) {
 	client := http.DefaultClient
 	client, err := WrapHTTPProxy(client, "", true)
 	assert.NoError(t, err)
-	resp, err := client.Get("https://amazon.com/")
+	resp, err := client.Get("https://z.cn/")
 	assert.NoError(t, err)
 	defer resp.Body.Close()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)

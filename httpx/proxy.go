@@ -11,6 +11,9 @@ import (
 
 // WrapHTTPProxy add a proxy for a http client
 func WrapHTTPProxy(client *http.Client, proxyURL string, insecure bool) (*http.Client, error) {
+	if proxyURL == "" {
+		return client, nil
+	}
 	proxyURLIns, err := url.Parse(stringx.AddURLSchema(proxyURL, "http"))
 	if err != nil {
 		return nil, fmt.Errorf("parse proxyURL: %s, %w", proxyURL, err)
