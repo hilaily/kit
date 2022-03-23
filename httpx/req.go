@@ -15,9 +15,11 @@ func Get(schemaHostPath string, params *url.Values, headers map[string]string, d
 		return nil, fmt.Errorf("[httpx], parse url, %w", err)
 	}
 	q := _url.Query()
-	for k, v := range *params {
-		if len(v) > 0 {
-			q.Set(k, v[0])
+	if params != nil {
+		for k, v := range *params {
+			if len(v) > 0 {
+				q.Set(k, v[0])
+			}
 		}
 	}
 
