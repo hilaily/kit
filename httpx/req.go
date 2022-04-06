@@ -3,6 +3,7 @@ package httpx
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -25,6 +26,29 @@ func Get(schemaHostPath string, params *url.Values, headers map[string]string, d
 
 	_url.RawQuery = q.Encode()
 	_req, err := http.NewRequest(http.MethodGet, _url.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("[httpx], make request, %w", err)
+	}
+	for k, v := range headers {
+		_req.Header.Set(k, v)
+	}
+	resp, err := http.DefaultClient.Do(_req)
+	if err != nil {
+		return nil, fmt.Errorf("[httpx], send request, %w", err)
+	}
+	defer func() {
+		_ = resp.Body.Close()
+	}()
+	return HandleResp(resp, dst)
+}
+
+// Post Send a post request
+func Post(schemaHostPath string, headers map[string]string, body io.Reader, dst interface{}) ([]byte, error) {
+	_url, err := url.Parse(schemaHostPath)
+	if err != nil {
+		return nil, fmt.Errorf("[httpx], parse url, %w", err)
+	}
+	_req, err := http.NewRequest(http.MethodPost, _url.String(), body)
 	if err != nil {
 		return nil, fmt.Errorf("[httpx], make request, %w", err)
 	}
