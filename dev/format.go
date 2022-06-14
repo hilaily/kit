@@ -3,7 +3,13 @@ package dev
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
+	"strings"
 )
+
+func IsGoTest() bool {
+	return strings.HasSuffix(os.Args[0], ".test")
+}
 
 // JSON ...
 func JSON(i interface{}) []byte {
