@@ -1,8 +1,17 @@
 package listx
 
+func Index[E comparable](list []E, element E) int {
+	for i, vs := range list {
+		if element == vs {
+			return i
+		}
+	}
+	return -1
+}
+
 // ToMap transfer a string slice to a map
-func ToMap(data []string) map[string]struct{} {
-	m := make(map[string]struct{}, len(data))
+func ToMap[E comparable](data []E) map[E]struct{} {
+	m := make(map[E]struct{}, len(data))
 	for _, v := range data {
 		m[v] = struct{}{}
 	}
@@ -10,20 +19,15 @@ func ToMap(data []string) map[string]struct{} {
 }
 
 // Has represent if a element is in the list
-func Has(list []string, element string) bool {
-	for _, v := range list {
-		if v == element {
-			return true
-		}
-	}
-	return false
+func Has[E comparable](list []E, element E) bool {
+	return Index(list, element) > 0
 }
 
 // Dedup remove duplicate element in slice
-func Dedup(s []string) []string {
+func Dedup[E comparable](s []E) []E {
 	l := len(s)
-	uniq := make(map[string]struct{}, l)
-	newArr := make([]string, 0, l)
+	uniq := make(map[E]struct{}, l)
+	newArr := make([]E, 0, l)
 	for _, v := range s {
 		_, ok := uniq[v]
 		if ok {
