@@ -28,3 +28,10 @@ func ReadJSON(filename string, ptr interface{}) {
 	err = json.Unmarshal(res, ptr)
 	CheckErr(err)
 }
+
+func WriteJSON(filename string, data interface{}) {
+	en, err := json.Marshal(data)
+	CheckErr(err)
+	err = ioutil.WriteFile(filename, en, 0777)
+	CheckErr(err)
+}
