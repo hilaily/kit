@@ -3,14 +3,20 @@ package listx
 func NewList[E comparable](list []E) *List[E] {
 	m := ToMap(list)
 	return &List[E]{
-		m:    m,
-		list: list,
+		m:     m,
+		list:  list,
+		count: len(list),
 	}
 }
 
 type List[E comparable] struct {
-	list []E
-	m    map[E]struct{}
+	list  []E
+	m     map[E]struct{}
+	count int
+}
+
+func (l *List[E]) Len() int {
+	return l.count
 }
 
 func (l *List[E]) ToMap() map[E]struct{} {
