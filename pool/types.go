@@ -11,4 +11,5 @@ type IPool interface {
 	CtxGo(ctx context.Context, f func())
 	// SetPanicHandler sets the panic handler.
 	//SetPanicHandler(f func(context.Context, interface{}))
+	Wait()
 }
