@@ -1,7 +1,6 @@
 package dev
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/sirupsen/logrus"
