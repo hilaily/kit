@@ -1,6 +1,66 @@
 package errorx
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
+
+var (
+	_ IErr = &Err{}
+)
+
+type IErr interface {
+	ErrCode() int // add E prefix, because Code, Msg may be used for structure field.
+	ErrMsg() string
+	ExtraInfo() []byte
+	Error() string
+}
+
+func NewErr(code int, msg string, extra ...[]byte) *Err {
+	e := &Err{
+		Code: code,
+		Msg:  msg,
+	}
+	if len(extra) > 0 {
+		e.Extra = extra[0]
+	}
+	return e
+}
+
+type Err struct {
+	Code  int
+	Msg   string
+	Extra []byte
+}
+
+func (e *Err) ErrCode() int {
+	return e.Code
+}
+
+func (e *Err) ErrMsg() string {
+	return e.Msg
+}
+
+func (e *Err) ExtraInfo() []byte {
+	return e.Extra
+}
+
+// Clone a new err with new msg, code is the same
+func (e *Err) Clone(format string, a ...any) *Err {
+	return &Err{
+		Code:  e.Code,
+		Msg:   fmt.Sprintf(format, a...),
+		Extra: e.Extra,
+	}
+}
+
+func (e *Err) Format(a ...any) *Err {
+	return e.Clone(e.Msg, a...)
+}
+
+func (e *Err) Error() string {
+	return fmt.Sprintf("code: %d, msg: %s, extra: %s", e.Code, e.Msg, string(e.Extra))
+}
 
 // Unwrap unwrap error to get custom err object
 func Unwrap[T any](err error) (T, bool) {

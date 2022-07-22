@@ -18,6 +18,9 @@ func TestErr(t *testing.T) {
 	e = myErr1
 	v, ok = Unwrap[*MyErr](e)
 	fmt.Println("assert ==: ", ok, v)
+
+	v2, ok := Unwrap[IInter](e)
+	fmt.Println("assert ==: ", ok, v2)
 }
 
 func test() error {
@@ -32,6 +35,14 @@ type MyErr struct {
 
 func (m *MyErr) Error() string {
 	return m.Code
+}
+
+func (m *MyErr) TestInterface() string {
+	return "this is a implement"
+}
+
+type IInter interface {
+	TestInterface() string
 }
 
 var (
