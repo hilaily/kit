@@ -16,6 +16,11 @@ type IErr interface {
 	Error() string
 }
 
+// New create a new error
+func New(code int, msg string, extra ...[]byte) *Err {
+	return NewErr(code, msg, extra...)
+}
+
 func NewErr(code int, msg string, extra ...[]byte) *Err {
 	e := &Err{
 		Code: code,
