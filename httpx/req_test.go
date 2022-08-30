@@ -6,9 +6,33 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
+	"time"
 
+	. "github.com/smartystreets/goconvey/convey"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestTimeout(t *testing.T) {
+	Convey("TestTimeout", t, func() {
+		Convey("test default timeout", func() {
+			start := time.Now()
+			_, err := Get("https://httpstat.us/200?sleep=60000", nil, nil, nil)
+			So(err, ShouldBeError)
+			tt := time.Since(start)
+			So(int(tt.Seconds()), ShouldEqual, 5)
+			t.Log(tt)
+		})
+
+		Convey("test custome timeout", func() {
+			start := time.Now()
+			_, err := Get("https://httpstat.us/200?sleep=60000", nil, nil, nil, 10*time.Second)
+			So(err, ShouldBeError)
+			tt := time.Since(start)
+			So(int(tt.Seconds()), ShouldEqual, 10)
+			t.Log(tt)
+		})
+	})
+}
 
 func TestHandleResp(t *testing.T) {
 	rd := bytes.NewBufferString(`{"a":1, "b":"ok"}`)

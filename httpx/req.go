@@ -7,10 +7,22 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
+
+	"github.com/hilaily/kit/mapx"
+)
+
+var (
+	clientMap      = mapx.NewSafeMap[time.Duration, *http.Client](2)
+	defaultTimeout = 5 * time.Second
 )
 
 // Get Send a get request
-func Get(schemaHostPath string, params *url.Values, headers map[string]string, dst interface{}) ([]byte, error) {
+func Get(schemaHostPath string, params *url.Values, headers map[string]string, dst interface{}, timeout ...time.Duration) ([]byte, error) {
+	to := defaultTimeout
+	if len(timeout) > 0 {
+		to = timeout[0]
+	}
 	_url, err := url.Parse(schemaHostPath)
 	if err != nil {
 		return nil, fmt.Errorf("[httpx], parse url, %w", err)
@@ -32,7 +44,7 @@ func Get(schemaHostPath string, params *url.Values, headers map[string]string, d
 	for k, v := range headers {
 		_req.Header.Set(k, v)
 	}
-	resp, err := http.DefaultClient.Do(_req)
+	resp, err := getClient(to).Do(_req)
 	if err != nil {
 		return nil, fmt.Errorf("[httpx], send request, %w", err)
 	}
@@ -43,7 +55,12 @@ func Get(schemaHostPath string, params *url.Values, headers map[string]string, d
 }
 
 // Post Send a post request
-func Post(schemaHostPath string, headers map[string]string, body io.Reader, dst interface{}) ([]byte, error) {
+func Post(schemaHostPath string, headers map[string]string, body io.Reader, dst interface{}, timeout ...time.Duration) ([]byte, error) {
+	to := defaultTimeout
+	if len(timeout) > 0 {
+		to = timeout[0]
+	}
+
 	_url, err := url.Parse(schemaHostPath)
 	if err != nil {
 		return nil, fmt.Errorf("[httpx], parse url, %w", err)
@@ -55,7 +72,7 @@ func Post(schemaHostPath string, headers map[string]string, body io.Reader, dst 
 	for k, v := range headers {
 		_req.Header.Set(k, v)
 	}
-	resp, err := http.DefaultClient.Do(_req)
+	resp, err := getClient(to).Do(_req)
 	if err != nil {
 		return nil, fmt.Errorf("[httpx], send request, %w", err)
 	}
@@ -82,4 +99,14 @@ func HandleResp(resp *http.Response, dst interface{}) ([]byte, error) {
 		return body, fmt.Errorf("[httpx], unmarshal resp, body: %s, err: %w", string(body), err)
 	}
 	return body, nil
+}
+
+func getClient(timeout time.Duration) *http.Client {
+	v, ok := clientMap.Get(timeout)
+	if ok {
+		return v
+	}
+	c := &http.Client{Timeout: timeout}
+	clientMap.Set(timeout, c)
+	return c
 }
