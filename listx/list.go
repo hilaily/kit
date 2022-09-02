@@ -43,7 +43,7 @@ func (l *List[E]) Index(list []E, element E) int {
 
 // FetchAllByBatch
 // Parameter
-//   f: is a function geting data by page
+//   f: is a function getting data by page
 //   batch: is how much result you want to get once
 func FetchAllByBatch[T any](
 	f func(page, pageSize int) ([]T, error),
