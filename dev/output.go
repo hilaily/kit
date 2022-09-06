@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// Deprecated: use helper package
 // CheckErr ...
 func CheckErr(err error, msg ...string) {
 	if err != nil {
@@ -18,6 +19,7 @@ func CheckErr(err error, msg ...string) {
 	}
 }
 
+// Deprecated: use helper package
 // PJSON ...
 func PJSON(data ...interface{}) {
 	en, err := json.Marshal(data)
@@ -25,6 +27,7 @@ func PJSON(data ...interface{}) {
 	log.Println(string(en))
 }
 
+// Deprecated: use helper package
 // PJSONIndent ...
 func PJSONIndent(data ...interface{}) {
 	en, err := json.MarshalIndent(data, "", "  ")
@@ -32,6 +35,7 @@ func PJSONIndent(data ...interface{}) {
 	log.Println(string(en))
 }
 
+// Deprecated: use helper package
 // Dump ...
 func Dump(i ...interface{}) {
 	str := strings.Builder{}
@@ -46,6 +50,7 @@ func Dump(i ...interface{}) {
 	log.Println(str.String())
 }
 
+// Deprecated: use helper package
 // IDump ...
 func IDump(i ...interface{}) {
 	str := strings.Builder{}

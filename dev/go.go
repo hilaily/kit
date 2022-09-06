@@ -10,8 +10,10 @@ import (
 
 const k = 1 << 10
 
+// Deprecated: use helper package
 type Printf = func(format string, v ...interface{})
 
+// Deprecated: use helper package
 func Go(f func()) {
 	go func() {
 		defer func() {
@@ -21,6 +23,7 @@ func Go(f func()) {
 	}()
 }
 
+// Deprecated: use helper package
 func Go2(f func(), printf Printf) {
 	go func() {
 		defer func() {
@@ -30,11 +33,13 @@ func Go2(f func(), printf Printf) {
 	}()
 }
 
+// Deprecated: use helper package
 func Recover(r interface{}) error {
 	loggerStderr := log.New(os.Stderr, "", log.LstdFlags)
 	return Recover2(r, loggerStderr.Printf)
 }
 
+// Deprecated: use helper package
 func Recover2(r interface{}, printf Printf) error {
 	if r != nil {
 		buf := make([]byte, 4*k)
