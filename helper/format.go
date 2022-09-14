@@ -2,7 +2,6 @@ package helper
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -23,7 +22,7 @@ func JSONIndent(i interface{}) []byte {
 }
 
 func ReadJSON(filename string, ptr interface{}) {
-	res, err := ioutil.ReadFile(filename)
+	res, err := os.ReadFile(filename)
 	CheckErr(err)
 	err = json.Unmarshal(res, ptr)
 	CheckErr(err)
@@ -32,7 +31,7 @@ func ReadJSON(filename string, ptr interface{}) {
 func WriteJSON(filename string, data interface{}) {
 	en, err := json.Marshal(data)
 	CheckErr(err)
-	err = ioutil.WriteFile(filename, en, 0777)
+	err = os.WriteFile(filename, en, 0777)
 	CheckErr(err)
 }
 

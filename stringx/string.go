@@ -13,6 +13,9 @@ import (
 	"strings"
 	"unicode"
 	"unsafe"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 var (
@@ -38,7 +41,8 @@ func Camel2Case(name string) string {
 // Case2Camel ...
 func Case2Camel(name string) string {
 	name = strings.ReplaceAll(name, "_", " ")
-	name = strings.Title(name)
+	caser := cases.Title(language.English)
+	name = caser.String(name)
 	return strings.ReplaceAll(name, " ", "")
 }
 

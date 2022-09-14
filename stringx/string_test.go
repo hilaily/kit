@@ -7,6 +7,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestCase(t *testing.T) {
+	str1 := "hello_world"
+	str2 := "HelloWorld"
+	assert.Equal(t, str2, Case2Camel(str1))
+	assert.Equal(t, str1, Camel2Case(str2))
+}
+
 func TestZHToUnit(t *testing.T) {
 	raw := "测试中文abc"
 	res := ZHToUnicode(raw)

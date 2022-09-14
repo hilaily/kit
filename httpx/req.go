@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
@@ -84,7 +83,7 @@ func Post(schemaHostPath string, headers map[string]string, body io.Reader, dst 
 
 // HandleResp check http status code and unmarshal a response body
 func HandleResp(resp *http.Response, dst interface{}) ([]byte, error) {
-	body, readErr := ioutil.ReadAll(resp.Body)
+	body, readErr := io.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK {
 		return body, fmt.Errorf("[httpx], http status: code= %d, body= %s", resp.StatusCode, string(body))
 	}

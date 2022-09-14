@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/hilaily/kit/dev"
+	"github.com/hilaily/kit/helper"
 )
 
 var (
@@ -40,7 +40,7 @@ func (p *pool) CtxGo(ctx context.Context, f func()) {
 	p.wg.Add(1)
 	<-p.ch
 	go func() {
-		dev.Recover(recover())
+		_ = helper.Recover(recover())
 		f()
 		p.wg.Done()
 		p.ch <- struct{}{}
