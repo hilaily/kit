@@ -15,7 +15,7 @@ type Printf = func(format string, v ...interface{})
 func Go(f func()) {
 	go func() {
 		defer func() {
-			Recover(recover())
+			_ = Recover(recover())
 		}()
 		f()
 	}()
@@ -24,7 +24,7 @@ func Go(f func()) {
 func Go2(f func(), printf Printf) {
 	go func() {
 		defer func() {
-			Recover2(recover(), printf)
+			_ = Recover2(recover(), printf)
 		}()
 		f()
 	}()
