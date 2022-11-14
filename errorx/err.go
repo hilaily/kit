@@ -63,6 +63,14 @@ func (e *Err) Format(a ...any) *Err {
 	return e.Clone(e.Msg, a...)
 }
 
+func (e *Err) SetExtra(format string, a ...any) *Err {
+	return &Err{
+		Code:  e.Code,
+		Msg:   e.Msg,
+		Extra: fmt.Sprintf(format, a...),
+	}
+}
+
 func (e *Err) Error() string {
 	return fmt.Sprintf("code: %d, msg: %s, extra: %s", e.Code, e.Msg, e.Extra)
 }
