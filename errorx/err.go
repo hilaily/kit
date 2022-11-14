@@ -12,16 +12,16 @@ var (
 type IErr interface {
 	ErrCode() int // add E prefix, because Code, Msg may be used for structure field.
 	ErrMsg() string
-	ExtraInfo() []byte
+	ExtraInfo() string
 	Error() string
 }
 
 // New create a new error
-func New(code int, msg string, extra ...[]byte) *Err {
+func New(code int, msg string, extra ...string) *Err {
 	return NewErr(code, msg, extra...)
 }
 
-func NewErr(code int, msg string, extra ...[]byte) *Err {
+func NewErr(code int, msg string, extra ...string) *Err {
 	e := &Err{
 		Code: code,
 		Msg:  msg,
@@ -35,7 +35,7 @@ func NewErr(code int, msg string, extra ...[]byte) *Err {
 type Err struct {
 	Code  int
 	Msg   string
-	Extra []byte
+	Extra string
 }
 
 func (e *Err) ErrCode() int {
@@ -46,7 +46,7 @@ func (e *Err) ErrMsg() string {
 	return e.Msg
 }
 
-func (e *Err) ExtraInfo() []byte {
+func (e *Err) ExtraInfo() string {
 	return e.Extra
 }
 
@@ -64,7 +64,7 @@ func (e *Err) Format(a ...any) *Err {
 }
 
 func (e *Err) Error() string {
-	return fmt.Sprintf("code: %d, msg: %s, extra: %s", e.Code, e.Msg, string(e.Extra))
+	return fmt.Sprintf("code: %d, msg: %s, extra: %s", e.Code, e.Msg, e.Extra)
 }
 
 // Unwrap unwrap error to get custom err object
