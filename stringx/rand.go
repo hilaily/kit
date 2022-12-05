@@ -23,7 +23,7 @@ var (
 )
 
 // GenRankStrLowercase gen random string with lowercase
-// @param n: string length
+// param n: string length
 func GenRankStrLowercase(n int) string {
 	b := make([]rune, n)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -34,7 +34,7 @@ func GenRankStrLowercase(n int) string {
 }
 
 // GenRankStr gen random string 生成随机字符串
-// @param n: string length 字符串长度
+// param n: string length 字符串长度
 func GenRankStr(n int) string {
 	b := make([]byte, n)
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!

@@ -23,7 +23,8 @@ type (
 )
 
 // NewCacheMap ...
-//	@param d 缓存时长
+//
+// param d 缓存时长
 func NewCacheMap(d time.Duration, autoDel bool) *CacheMap {
 	c := &CacheMap{}
 	c.lock = &sync.RWMutex{}
@@ -36,8 +37,9 @@ func NewCacheMap(d time.Duration, autoDel bool) *CacheMap {
 }
 
 // Set 设置值
-//	@param k map 的 key
-//	@param v map 的 value
+//
+// param k map 的 key
+// param v map 的 value
 func (c *CacheMap) Set(k string, v interface{}) {
 	c.lock.Lock()
 	c.m[k] = &val{time.Now().Add(c.cacheTime).Unix(), v}
@@ -52,8 +54,9 @@ func (c *CacheMap) SetWithTime(k string, v interface{}, t time.Time) {
 }
 
 // Get 根据 key 获取 value
-//	@return interface{} value 值
-//	@return bool value 是否存在
+//
+// return interface{} value 值
+// return bool value 是否存在
 func (c *CacheMap) Get(k string) (interface{}, bool) {
 	now := time.Now().Unix()
 	c.lock.RLock()
