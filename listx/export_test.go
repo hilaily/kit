@@ -1,8 +1,19 @@
 package listx
 
 import (
+	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
+
+func TestToInterface(t *testing.T) {
+	arr := []int{1, 2, 3}
+	data := ToInterface(arr)
+	typ := reflect.TypeOf(data)
+	assert.Equal(t, "[]interface {}", typ.String())
+	t.Log(typ)
+}
 
 func TestReverse(t *testing.T) {
 	a := []int{1, 2, 3, 4}
