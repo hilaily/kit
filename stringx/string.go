@@ -215,7 +215,7 @@ func UnicodeToZH(raw string) (string, error) {
 	return strconv.Unquote(strings.ReplaceAll(strconv.Quote(raw), `\\u`, `\u`))
 }
 
-// TrimField trim struct string field
+// TrimField trim struct string field, ptr must be a struct pointer
 func TrimField(ptr any) {
 	rv := reflect.ValueOf(ptr).Elem()
 	num := rv.NumField()

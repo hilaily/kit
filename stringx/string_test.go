@@ -8,23 +8,34 @@ import (
 )
 
 func TestTrimField(t *testing.T) {
+	type B string
 	type A struct {
 		Name string
 		C    int
 		like string
 		Addr string
+		DDD  *string
+		EEE  B
 	}
 	a := A{
 		Name: "aaa ",
 		like: " ccc ",
 		Addr: " bbb ",
 		C:    1,
+		EEE:  "eee ",
 	}
 	TrimField(&a)
 	assert.Equal(t, "aaa", a.Name)
 	assert.Equal(t, "bbb", a.Addr)
 	assert.Equal(t, " ccc ", a.like)
+	assert.Equal(t, B("eee"), a.EEE)
 	assert.Equal(t, 1, a.C)
+
+	var b A
+	TrimField(&b)
+
+	m := map[string]int{}
+	TrimField(&m)
 }
 
 func TestCase(t *testing.T) {
