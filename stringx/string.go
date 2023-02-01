@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"path"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -212,4 +213,17 @@ func ZHToUnicode(raw string) string {
 // UnicodeToZH turn unitcode into Chinese
 func UnicodeToZH(raw string) (string, error) {
 	return strconv.Unquote(strings.ReplaceAll(strconv.Quote(raw), `\\u`, `\u`))
+}
+
+// TrimField trim struct string field
+func TrimField(ptr any) {
+	rv := reflect.ValueOf(ptr).Elem()
+	num := rv.NumField()
+	for i := 0; i < num; i++ {
+		val := rv.Field(i)
+		if val.Kind() == reflect.String && val.CanSet() {
+			oldValue := val.String()
+			val.SetString(strings.TrimSpace(oldValue))
+		}
+	}
 }

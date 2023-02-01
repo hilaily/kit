@@ -7,6 +7,26 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestTrimField(t *testing.T) {
+	type A struct {
+		Name string
+		C    int
+		like string
+		Addr string
+	}
+	a := A{
+		Name: "aaa ",
+		like: " ccc ",
+		Addr: " bbb ",
+		C:    1,
+	}
+	TrimField(&a)
+	assert.Equal(t, "aaa", a.Name)
+	assert.Equal(t, "bbb", a.Addr)
+	assert.Equal(t, " ccc ", a.like)
+	assert.Equal(t, 1, a.C)
+}
+
 func TestCase(t *testing.T) {
 	str1 := "hello_world"
 	str2 := "HelloWorld"
