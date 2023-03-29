@@ -1,64 +1,43 @@
 package pathx
 
 import (
-	"bytes"
 	"errors"
 	"os"
-	"os/exec"
-	"os/user"
-	"runtime"
-	"strings"
+	"path/filepath"
 )
+
+func MustExpandHome(path string) string {
+	res, err := ExpandHome(path)
+	if err != nil {
+		panic(err)
+	}
+	return res
+}
+
+// ExpandHome expands the path if it is start with `~`. If it isn't prefixed with `~`, then return itself
+func ExpandHome(path string) (string, error) {
+	if len(path) == 0 {
+		return path, nil
+	}
+
+	if path[0] != '~' {
+		return path, nil
+	}
+
+	if len(path) > 1 && path[1] != '/' && path[1] != '\\' {
+		return "", errors.New("cannot expand user-specific home dir")
+	}
+
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(dir, path[1:]), nil
+}
 
 // GetHome return the home directory for current user
 // if not found home directory return error
 func GetHome() (string, error) {
-	_user, err := user.Current()
-	if nil == err {
-		return _user.HomeDir, nil
-	}
-
-	// cross compile support
-	if runtime.GOOS == "windows" {
-		return homeWindows()
-	}
-
-	// Unix-like system, so just assume Unix
-	return homeUnix()
-}
-
-func homeUnix() (string, error) {
-	// First prefer the HOME environmental variable
-	if home := os.Getenv("HOME"); home != "" {
-		return home, nil
-	}
-
-	// If that fails, try the shell
-	var stdout bytes.Buffer
-	cmd := exec.Command("sh", "-c", "eval echo ~$USER")
-	cmd.Stdout = &stdout
-	if err := cmd.Run(); err != nil {
-		return "", err
-	}
-
-	result := strings.TrimSpace(stdout.String())
-	if result == "" {
-		return "", errors.New("blank output when reading home directory")
-	}
-
-	return result, nil
-}
-
-func homeWindows() (string, error) {
-	drive := os.Getenv("HOMEDRIVE")
-	path := os.Getenv("HOMEPATH")
-	home := drive + path
-	if drive == "" || path == "" {
-		home = os.Getenv("USERPROFILE")
-	}
-	if home == "" {
-		return "", errors.New("HOMEDRIVE, HOMEPATH, and USERPROFILE are blank")
-	}
-
-	return home, nil
+	return os.UserHomeDir()
 }
