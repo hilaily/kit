@@ -1,10 +1,10 @@
 package helper
 
-func StringPrt(val string) *string {
+func StringPtr(val string) *string {
 	return &val
 }
 
-func IntPrt(val int) *int {
+func IntPtr(val int) *int {
 	return &val
 }
 
