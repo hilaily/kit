@@ -1,5 +1,17 @@
 package helper
 
+func StringPrt(val string) *string {
+	return &val
+}
+
+func IntPrt(val int) *int {
+	return &val
+}
+
+func BoolPtr(val bool) *bool {
+	return &val
+}
+
 // PtrOf returns pointer to value.
 func PtrOf[T any](v T) *T {
 	return &v
