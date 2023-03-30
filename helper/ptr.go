@@ -7,8 +7,8 @@ func PtrOf[T any](v T) *T {
 
 // PtrTo returns the value of the pointer
 func PtrTo[T any](v *T) T {
-	var zero T
 	if v == nil {
+		var zero T
 		return zero
 	}
 	return *v
