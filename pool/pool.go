@@ -11,7 +11,7 @@ var (
 	_ IPool = &pool{}
 )
 
-func NewPool(concurrenceCount int) IPool {
+func NewPool(concurrenceCount int) *pool {
 	if concurrenceCount <= 0 {
 		concurrenceCount = 1
 	}
@@ -40,9 +40,11 @@ func (p *pool) CtxGo(ctx context.Context, f func()) {
 	p.wg.Add(1)
 	<-p.ch
 	go func() {
+		defer func() {
+			p.wg.Done()
+		}()
 		_ = helper.Recover(recover())
 		f()
-		p.wg.Done()
 		p.ch <- struct{}{}
 	}()
 }
