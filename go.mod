@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/text v0.3.0
+	golang.org/x/text v0.3.8
 )
 
 require (
