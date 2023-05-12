@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"text/template"
 	"unicode"
 	"unsafe"
 
@@ -55,7 +56,7 @@ func Ucfirst(str string) string {
 	return ""
 }
 
-// Lcfirst
+// Lcfirst ...
 func Lcfirst(str string) string {
 	for i, v := range str {
 		return string(unicode.ToLower(v)) + str[i+1:]
@@ -63,7 +64,7 @@ func Lcfirst(str string) string {
 	return ""
 }
 
-// 内嵌bytes.Buffer，支持连写
+// Buffer 内嵌bytes.Buffer，支持连写
 type Buffer struct {
 	*bytes.Buffer
 }
@@ -165,10 +166,9 @@ func Dedup(s []string) []string {
 		_, ok := uniq[v]
 		if ok {
 			continue
-		} else {
-			newArr = append(newArr, v)
-			uniq[v] = struct{}{}
 		}
+		newArr = append(newArr, v)
+		uniq[v] = struct{}{}
 	}
 	return newArr
 }
@@ -226,4 +226,16 @@ func TrimField(ptr any) {
 			val.SetString(strings.TrimSpace(oldValue))
 		}
 	}
+}
+
+// Format ...
+// usage: res := Format("this is a {{.name}}, {{.age}} years old", map[string]any{"name": "Bob", "age": 10})
+func Format(str string, data map[string]any) string {
+	t := template.Must(template.New(GenRankStrLowercase(6)).Parse(str))
+	b := &bytes.Buffer{}
+	err := t.Execute(b, data)
+	if err != nil {
+		panic(fmt.Errorf("format string %s, %w", str, err))
+	}
+	return b.String()
 }

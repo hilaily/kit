@@ -7,6 +7,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestFormat(t *testing.T) {
+	res := Format("this is a {{.name}}, {{.age}} years old", map[string]any{"name": "Bob", "age": 10})
+	assert.Equal(t, "this is a Bob, 10 years old", res)
+}
+
 func TestTrimField(t *testing.T) {
 	type B string
 	type A struct {

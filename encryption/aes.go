@@ -8,6 +8,7 @@ import (
 	"fmt"
 )
 
+// AesEncrypt ...
 func AesEncrypt(plaintext string, key []byte) (string, error) {
 	c := make([]byte, aes.BlockSize+len(plaintext))
 	iv := c[:aes.BlockSize]
@@ -18,6 +19,7 @@ func AesEncrypt(plaintext string, key []byte) (string, error) {
 	return base64.StdEncoding.EncodeToString(res), nil
 }
 
+// AesDecrypt 解密函数
 func AesDecrypt(ciphertext string, key []byte) (string, error) {
 	res, err := base64.StdEncoding.DecodeString(ciphertext)
 	if err != nil {
@@ -43,7 +45,6 @@ func pKCS7UnPadding(origData []byte) []byte {
 	return origData[:(length - unpadding)]
 }
 
-// AesEncrypt 加密函数
 func aesEncrypt(plaintext []byte, key, iv []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -57,7 +58,6 @@ func aesEncrypt(plaintext []byte, key, iv []byte) ([]byte, error) {
 	return crypted, nil
 }
 
-// AesDecrypt 解密函数
 func aesDecrypt(ciphertext []byte, key, iv []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
