@@ -5,6 +5,10 @@ import (
 	"net/http"
 )
 
+func DownloadHandler(resp http.ResponseWriter, reader io.Reader, filename string) error {
+	return DownloadHander(resp, reader, filename)
+}
+
 func DownloadHander(resp http.ResponseWriter, reader io.Reader, filename string) error {
 	resp.Header().Add("Content-Description", "File Transfer")
 	resp.Header().Add("Content-Disposition", "attachment; filename="+filename)

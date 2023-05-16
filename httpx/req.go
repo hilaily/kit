@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/hilaily/kit/mapx"
@@ -98,6 +99,29 @@ func HandleResp(resp *http.Response, dst interface{}) ([]byte, error) {
 		return body, fmt.Errorf("[httpx], unmarshal resp, body: %s, err: %w", string(body), err)
 	}
 	return body, nil
+}
+
+// Download ...
+func Download(fileURL, filepath string, timeout ...time.Duration) (int64, error) {
+	to := defaultTimeout
+	if len(timeout) > 0 {
+		to = timeout[0]
+	}
+	// Create blank file
+	file, err := os.Create(filepath)
+	if err != nil {
+		return 0, fmt.Errorf("download file fail, %s, %w", fileURL, err)
+	}
+	defer file.Close()
+
+	// Put content on file
+	resp, err := getClient(to).Get(fileURL)
+	if err != nil {
+		return 0, fmt.Errorf("http get file fail, %s, %w", fileURL, err)
+	}
+	defer resp.Body.Close()
+	size, err := io.Copy(file, resp.Body)
+	return size, err
 }
 
 func getClient(timeout time.Duration) *http.Client {

@@ -88,7 +88,7 @@ func (b *Buffer) Append(i interface{}) *Buffer {
 	case []byte:
 		b.Write(val)
 	case rune:
-		b.WriteRune(val)
+		_, _ = b.WriteRune(val)
 	}
 	return b
 }
@@ -99,7 +99,7 @@ func (b *Buffer) append(s string) *Buffer {
 			log.Println("out of memory")
 		}
 	}()
-	b.WriteString(s)
+	_, _ = b.WriteString(s)
 	return b
 }
 
