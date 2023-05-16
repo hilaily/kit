@@ -12,6 +12,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestDownload(t *testing.T) {
+	s, err := Download("", nil, nil, "/tmp/ttt.tar.gz")
+	assert.NoError(t, err)
+	assert.NotZero(t, s)
+	t.Log(s)
+}
+
 func TestTimeout(t *testing.T) {
 	Convey("TestTimeout", t, func() {
 		Convey("test default timeout", func() {

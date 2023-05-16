@@ -23,20 +23,11 @@ func Get(schemaHostPath string, params *url.Values, headers map[string]string, d
 	if len(timeout) > 0 {
 		to = timeout[0]
 	}
-	_url, err := url.Parse(schemaHostPath)
-	if err != nil {
-		return nil, fmt.Errorf("[httpx], parse url, %w", err)
-	}
-	q := _url.Query()
-	if params != nil {
-		for k, v := range *params {
-			if len(v) > 0 {
-				q.Set(k, v[0])
-			}
-		}
-	}
 
-	_url.RawQuery = q.Encode()
+	_url, err := AddParamsToURL(schemaHostPath, params)
+	if err != nil {
+		return nil, err
+	}
 	_req, err := http.NewRequest(http.MethodGet, _url.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("[httpx], make request, %w", err)
@@ -102,11 +93,7 @@ func HandleResp(resp *http.Response, dst interface{}) ([]byte, error) {
 }
 
 // Download ...
-func Download(fileURL, filepath string, timeout ...time.Duration) (int64, error) {
-	to := defaultTimeout
-	if len(timeout) > 0 {
-		to = timeout[0]
-	}
+func Download(fileURL string, params *url.Values, headers map[string]string, filepath string, timeout ...time.Duration) (int64, error) {
 	// Create blank file
 	file, err := os.Create(filepath)
 	if err != nil {
@@ -115,7 +102,23 @@ func Download(fileURL, filepath string, timeout ...time.Duration) (int64, error)
 	defer file.Close()
 
 	// Put content on file
-	resp, err := getClient(to).Get(fileURL)
+	_url, err := AddParamsToURL(fileURL, params)
+	if err != nil {
+		return 0, err
+	}
+	_req, err := http.NewRequest(http.MethodGet, _url.String(), nil)
+	if err != nil {
+		return 0, fmt.Errorf("[httpx], make request, %w", err)
+	}
+	for k, v := range headers {
+		_req.Header.Set(k, v)
+	}
+	client := http.DefaultClient
+	if len(timeout) > 0 {
+		client = getClient(timeout[0])
+	}
+
+	resp, err := client.Do(_req)
 	if err != nil {
 		return 0, fmt.Errorf("http get file fail, %s, %w", fileURL, err)
 	}
@@ -132,4 +135,23 @@ func getClient(timeout time.Duration) *http.Client {
 	c := &http.Client{Timeout: timeout}
 	clientMap.Set(timeout, c)
 	return c
+}
+
+// AddParamsToURL ...
+func AddParamsToURL(originURL string, params *url.Values) (*url.URL, error) {
+	_url, err := url.Parse(originURL)
+	if err != nil {
+		return nil, fmt.Errorf("[httpx], parse url, %w", err)
+	}
+	q := _url.Query()
+	if params != nil {
+		for k, v := range *params {
+			if len(v) > 0 {
+				q.Set(k, v[0])
+			}
+		}
+	}
+
+	_url.RawQuery = q.Encode()
+	return _url, nil
 }
