@@ -123,6 +123,10 @@ func Download(fileURL string, params *url.Values, headers map[string]string, fil
 		return 0, fmt.Errorf("http get file fail, %s, %w", fileURL, err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		en, _ := io.ReadAll(resp.Body)
+		return 0, fmt.Errorf("%s", string(en))
+	}
 	size, err := io.Copy(file, resp.Body)
 	return size, err
 }
