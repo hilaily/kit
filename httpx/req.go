@@ -17,6 +17,20 @@ var (
 	defaultTimeout = 5 * time.Second
 )
 
+// BuildURLWithQueryParams ...
+func BuildURLWithQueryParams(baseURL string, params map[string]string) (string, error) {
+	parsedURL, err := url.Parse(baseURL)
+	if err != nil {
+		return "", err
+	}
+	query := parsedURL.Query()
+	for key, value := range params {
+		query.Set(key, value)
+	}
+	parsedURL.RawQuery = query.Encode()
+	return parsedURL.String(), nil
+}
+
 // Get Send a get request
 func Get(schemaHostPath string, params *url.Values, headers map[string]string, dst interface{}, timeout ...time.Duration) ([]byte, error) {
 	to := defaultTimeout
