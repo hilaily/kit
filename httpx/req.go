@@ -25,7 +25,9 @@ func BuildURLWithQueryParams(baseURL string, params map[string]string) (string, 
 	}
 	query := parsedURL.Query()
 	for key, value := range params {
-		query.Set(key, value)
+		if value != "" {
+			query.Set(key, value)
+		}
 	}
 	parsedURL.RawQuery = query.Encode()
 	return parsedURL.String(), nil
