@@ -1,5 +1,17 @@
 package listx
 
+// ShiftHead use a element as new head
+// [1,2,3,4,5] shift with index 2 -> [3,4,5,1,2]
+func ShiftHead[T any](arr []T, index int) []T {
+	l := len(arr)
+	if index >= l {
+		return arr
+	}
+	arr = append(arr, arr...)
+	arr = arr[index+1 : index+l+1]
+	return arr
+}
+
 func NewList[E comparable](list []E) *List[E] {
 	m := ToMap(list)
 	return &List[E]{
