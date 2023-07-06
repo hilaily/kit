@@ -1,6 +1,7 @@
 package pathx
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -67,6 +68,19 @@ func CopyDir(src string, dst string) error {
 				log.Println(err)
 			}
 		}
+	}
+	return nil
+}
+
+// CleanDir ...
+func CleanDir(dir string) error {
+	err := os.RemoveAll(dir)
+	if err != nil {
+		return fmt.Errorf("remove %s %w", dir, err)
+	}
+	err = os.MkdirAll(dir, 0777)
+	if err != nil {
+		return fmt.Errorf("mkdir %s %w", dir, err)
 	}
 	return nil
 }
