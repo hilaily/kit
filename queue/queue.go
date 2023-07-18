@@ -10,7 +10,7 @@ import (
 	简单实现的线程安全的队列
 */
 
-//简易实现队列
+// 简易实现队列
 type Queue struct {
 	l  *list.List
 	mu sync.RWMutex

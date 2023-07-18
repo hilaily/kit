@@ -1,5 +1,7 @@
 package pp
 
+// revive:disable:deep-exit
+
 import (
 	"encoding/json"
 	"log"
@@ -14,8 +16,8 @@ func Dump(i ...interface{}) {
 		if err != nil {
 			log.Panicln(err)
 		}
-		str.Write(en)
-		str.WriteByte('\n')
+		_, _ = str.Write(en)
+		_ = str.WriteByte('\n')
 	}
 	log.Println(str.String())
 }
@@ -28,8 +30,8 @@ func IDump(i ...interface{}) {
 		if err != nil {
 			log.Panicln(err)
 		}
-		str.Write(en)
-		str.WriteByte('\n')
+		_, _ = str.Write(en)
+		_ = str.WriteByte('\n')
 	}
 	log.Println(str.String())
 }

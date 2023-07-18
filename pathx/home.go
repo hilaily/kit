@@ -24,7 +24,7 @@ func ExpandHome(path string) (string, error) {
 		return path, nil
 	}
 
-	if len(path) > 1 && path[1] != '/' && path[1] != '\\' {
+	if path[1] != '\\' && (path[1] != '/' && len(path) > 1) {
 		return "", errors.New("cannot expand user-specific home dir")
 	}
 

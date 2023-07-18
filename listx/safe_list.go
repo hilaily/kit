@@ -2,15 +2,16 @@ package listx
 
 import "sync"
 
+// NewSafeList ...
 func NewSafeList[T any](caps ...int) *SafeList[T] {
 	s := &SafeList[T]{
 		RWMutex: &sync.RWMutex{},
 	}
-	cap := 0
+	_cap := 0
 	if len(caps) > 0 {
-		cap = caps[0]
+		_cap = caps[0]
 	}
-	s.list = make([]T, 0, cap)
+	s.list = make([]T, 0, _cap)
 	return s
 }
 
@@ -32,9 +33,7 @@ func (s *SafeList[T]) Len() int {
 func (s *SafeList[T]) List() []T {
 	arr := make([]T, 0, len(s.list))
 	s.RLock()
-	for k := range s.list {
-		arr = append(arr, s.list[k])
-	}
+	arr = append(arr, s.list...)
 	s.RUnlock()
 	return arr
 }

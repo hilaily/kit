@@ -32,10 +32,9 @@ func Dedup[E comparable](s []E) []E {
 		_, ok := uniq[v]
 		if ok {
 			continue
-		} else {
-			newArr = append(newArr, v)
-			uniq[v] = struct{}{}
 		}
+		newArr = append(newArr, v)
+		uniq[v] = struct{}{}
 	}
 	return newArr
 }

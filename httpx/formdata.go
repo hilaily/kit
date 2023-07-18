@@ -9,8 +9,9 @@ import (
 
 // NewFormBody represent create a http form data request
 // Parameters
-//  params: represent fields
-//  files: represent update files
+//
+//	params: represent fields
+//	files: represent update files
 func NewFormBody(params map[string]string, files []*FileInfo) (contentType string, body io.Reader, err error) {
 	buf := &bytes.Buffer{}
 	writer := multipart.NewWriter(buf)
@@ -18,6 +19,7 @@ func NewFormBody(params map[string]string, files []*FileInfo) (contentType strin
 	for _, v := range files {
 		var fileWriter io.Writer
 		if x, ok := v.Data.(io.Closer); ok {
+			//revive:disable:defer
 			defer x.Close()
 		}
 		fileWriter, err = writer.CreateFormFile(v.Fieldname, v.Filename)

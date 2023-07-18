@@ -1,5 +1,7 @@
 package dev
 
+//revive:disable
+
 import (
 	"encoding/json"
 	"fmt"

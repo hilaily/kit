@@ -103,8 +103,8 @@ func (b *BitMap) GetData() []uint64 {
 func (b *BitMap) String() string {
 	var sb strings.Builder
 	for index := len(b.bits) - 1; index >= 0; index-- {
-		sb.WriteString(uint64ToBinaryString(b.bits[index]))
-		sb.WriteString(" ")
+		_, _ = sb.WriteString(uint64ToBinaryString(b.bits[index]))
+		_, _ = sb.WriteString(" ")
 	}
 	return sb.String()
 }
@@ -126,17 +126,17 @@ func (b *BitMap) offset(num uint64) (byteIndex uint64, bitPos byte) {
 
 func uint64ToBinaryString(data uint64) string {
 	sb := &strings.Builder{}
-	sb.WriteString(fmt.Sprintf("(%20d %d)[", data, NumberOf1(data)))
+	_, _ = sb.WriteString(fmt.Sprintf("(%20d %d)[", data, NumberOf1(data)))
 	for index := 0; index < bitSize; index++ {
 		if index > 0 && index < bitSize && index%8 == 0 {
-			sb.WriteByte(' ')
+			_ = sb.WriteByte(' ')
 		}
 		if (bitmask[bitSize-1-index] & data) == 0 {
-			sb.WriteString("0")
+			_, _ = sb.WriteString("0")
 		} else {
-			sb.WriteString("1")
+			_, _ = sb.WriteString("1")
 		}
 	}
-	sb.WriteByte(']')
+	_ = sb.WriteByte(']')
 	return sb.String()
 }

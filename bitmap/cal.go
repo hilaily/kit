@@ -20,9 +20,9 @@ func Uint64ToByteArr(data uint64) []byte {
 	sb.Grow(64)
 	for index := 0; index < bitSize; index++ {
 		if (bitmask[bitSize-1-index] & data) == 0 {
-			sb.WriteByte('0')
+			_ = sb.WriteByte('0')
 		} else {
-			sb.WriteByte('1')
+			_ = sb.WriteByte('1')
 		}
 	}
 	return sb.Bytes()

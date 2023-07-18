@@ -6,8 +6,11 @@ import (
 )
 
 /*
-	带缓存的 map
+带缓存的 map
 */
+var (
+	autoDelInterval = 5 * time.Minute
+)
 
 type (
 	// CacheMap 带缓存的 m
@@ -38,8 +41,8 @@ func NewCacheMap2[T any](d time.Duration, autoDel bool) *CacheMap2[T] {
 
 // Set 设置值
 //
-//	param k map 的 key
-//	param v map 的 value
+// Param k: map 的 key
+// Param v: map 的 value
 func (c *CacheMap2[T]) Set(k string, v T) {
 	c.lock.Lock()
 	c.m[k] = &val2[T]{time.Now().Add(c.cacheTime).Unix(), v}
@@ -78,21 +81,24 @@ func (c *CacheMap2[T]) Del(k string) {
 
 // autoDel 自动删除过期的 key
 func (c *CacheMap2[T]) autoDel() {
+	f := func() {
+		c.lock.RLock()
+		now := time.Now().Unix()
+		mm := make([]string, 0, len(c.m))
+		for k, v := range c.m {
+			if v.t < now {
+				mm = append(mm, k)
+			}
+		}
+		for _, v := range mm {
+			delete(c.m, v)
+		}
+		c.lock.RUnlock()
+	}
 	go func() {
 		for {
-			time.Sleep(5 * time.Minute)
-			c.lock.RLock()
-			mm := make(map[string]int64, len(c.m))
-			for k, v := range c.m {
-				mm[k] = v.t
-			}
-			c.lock.RUnlock()
-			now := time.Now().Unix()
-			for k, v := range mm {
-				if v < now {
-					c.Del(k)
-				}
-			}
+			time.Sleep(autoDelInterval)
+			f()
 		}
 	}()
 }

@@ -77,21 +77,24 @@ func (c *CacheMap) Del(k string) {
 
 // autoDel 自动删除过期的 key
 func (c *CacheMap) autoDel() {
+	f := func() {
+		c.lock.RLock()
+		now := time.Now().Unix()
+		mm := make([]string, 0, len(c.m))
+		for k, v := range c.m {
+			if v.t < now {
+				mm = append(mm, k)
+			}
+		}
+		for _, v := range mm {
+			delete(c.m, v)
+		}
+		c.lock.RUnlock()
+	}
 	go func() {
 		for {
-			time.Sleep(5 * time.Minute)
-			c.lock.RLock()
-			mm := make(map[string]int64, len(c.m))
-			for k, v := range c.m {
-				mm[k] = v.t
-			}
-			c.lock.RUnlock()
-			now := time.Now().Unix()
-			for k, v := range mm {
-				if v < now {
-					c.Del(k)
-				}
-			}
+			time.Sleep(autoDelInterval)
+			f()
 		}
 	}()
 }

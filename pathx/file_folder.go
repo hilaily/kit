@@ -1,6 +1,7 @@
 package pathx
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -9,10 +10,7 @@ import (
 func IsExist(path string) bool {
 	_, err := os.Stat(path)
 	if err != nil {
-		if os.IsExist(err) {
-			return true
-		}
-		return false
+		return os.IsExist(err)
 	}
 	return true
 }
@@ -98,4 +96,17 @@ func (n *Entity) initStat() {
 		}
 		n.isInit = true
 	}
+}
+
+// CleanDir ...
+func CleanDir(dir string) error {
+	err := os.RemoveAll(dir)
+	if err != nil {
+		return fmt.Errorf("remove %s %w", dir, err)
+	}
+	err = os.MkdirAll(dir, 0777)
+	if err != nil {
+		return fmt.Errorf("mkdir %s %w", dir, err)
+	}
+	return nil
 }

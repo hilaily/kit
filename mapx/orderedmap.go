@@ -39,7 +39,7 @@ func (c *OrderedMap) Range(f func(k string, val interface{}) error) error {
 // MarshalJSON ...
 func (c *OrderedMap) MarshalJSON() ([]byte, error) {
 	buf := bytes.Buffer{}
-	buf.WriteString("{")
+	_, _ = buf.WriteString("{")
 	l := len(*c)
 	for i, node := range *c {
 		v := node.Val
@@ -52,15 +52,15 @@ func (c *OrderedMap) MarshalJSON() ([]byte, error) {
 			str = string(b)
 		}
 
-		buf.WriteString(`"`)
-		buf.WriteString(node.Key)
-		buf.WriteString(`":`)
-		buf.WriteString(str)
+		_, _ = buf.WriteString(`"`)
+		_, _ = buf.WriteString(node.Key)
+		_, _ = buf.WriteString(`":`)
+		_, _ = buf.WriteString(str)
 		if i != l-1 {
-			buf.WriteString(",")
+			_, _ = buf.WriteString(",")
 		}
 	}
-	buf.WriteString("}")
+	_, _ = buf.WriteString("}")
 	return buf.Bytes(), nil
 }
 

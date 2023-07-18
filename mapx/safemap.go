@@ -6,11 +6,11 @@ func NewSafeMap[K comparable, V any](caps ...int) *SafeMap[K, V] {
 	s := &SafeMap[K, V]{
 		RWMutex: &sync.RWMutex{},
 	}
-	cap := 0
+	_cap := 0
 	if len(caps) > 0 {
-		cap = caps[0]
+		_cap = caps[0]
 	}
-	s.m = make(map[K]V, cap)
+	s.m = make(map[K]V, _cap)
 	return s
 }
 

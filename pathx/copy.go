@@ -3,7 +3,6 @@ package pathx
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 )
@@ -45,42 +44,36 @@ func CopyDir(src string, dst string) error {
 	var srcinfo os.FileInfo
 
 	if srcinfo, err = os.Stat(src); err != nil {
-		return err
+		return fmt.Errorf("stat %s %w", src, err)
 	}
 
 	if err = os.MkdirAll(dst, srcinfo.Mode()); err != nil {
-		return err
+		return fmt.Errorf("mkdir %s %w", dst, err)
 	}
 
 	if fds, err = os.ReadDir(src); err != nil {
-		return err
+		return fmt.Errorf("read dir %s %w", src, err)
 	}
 	for _, fd := range fds {
-		srcfp := path.Join(src, fd.Name())
-		dstfp := path.Join(dst, fd.Name())
-
-		if fd.IsDir() {
-			if err = CopyDir(srcfp, dstfp); err != nil {
-				log.Println(err)
-			}
-		} else {
-			if err = CopyFile(srcfp, dstfp); err != nil {
-				log.Println(err)
-			}
+		err = copyOne(src, dst, fd)
+		if err != nil {
+			return err
 		}
 	}
 	return nil
 }
 
-// CleanDir ...
-func CleanDir(dir string) error {
-	err := os.RemoveAll(dir)
-	if err != nil {
-		return fmt.Errorf("remove %s %w", dir, err)
+func copyOne(src, dst string, fd os.DirEntry) error {
+	srcfp := path.Join(src, fd.Name())
+	dstfp := path.Join(dst, fd.Name())
+
+	var err error
+	if fd.IsDir() {
+		return CopyDir(srcfp, dstfp)
 	}
-	err = os.MkdirAll(dir, 0777)
+	err = CopyFile(srcfp, dstfp)
 	if err != nil {
-		return fmt.Errorf("mkdir %s %w", dir, err)
+		return fmt.Errorf("copy file %s - %s %w", srcfp, dstfp, err)
 	}
 	return nil
 }

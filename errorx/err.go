@@ -76,6 +76,8 @@ func (e *Err) Error() string {
 }
 
 // Unwrap unwrap error to get custom err object
+//
+//nolint:errorlint
 func Unwrap[T any](err error) (T, bool) {
 	var current = err
 	var last = err
