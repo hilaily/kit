@@ -10,10 +10,16 @@ type IModel interface {
 	Fields() ([]string, []interface{})
 }
 
+func BuildCreate(tableName string, data map[string]interface{}) (string, []any) {
+	cols, ph, params := BuildInsertParams(data)
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES(%s)", SpecialField(tableName), cols, ph)
+	return query, params
+}
+
 // GetBulkInsertSQL gen bulk insert sql
 // NOTE: items is a slice, and the element must implement IModel
 // INSERT INTO user (uid, name, money) VALUES (77, "name1", 77), (88, "name2", 88);
-func BuildBulkInsert[T IModel](tableName string, items []T) (string, []interface{}) {
+func BuildBulkCreate[T IModel](tableName string, items []T) (string, []interface{}) {
 	itemsInterface := ToInterfaceSlice(items)
 	if len(itemsInterface) == 0 {
 		return "", nil
@@ -47,9 +53,9 @@ func BuildBulkInsert[T IModel](tableName string, items []T) (string, []interface
 // NOTE: items is a slice, and the element must implement IModel
 // SQL 示例
 // INSERT INTO user (uid, name, money) VALUES (77, "name1", 77), (88, "name2", 88) ON DUPLICATE KEY UPDATE money=money, `name`=VALUES(`name`);
-func BuildBulkInsertSQLOnDuplicate[T IModel](tableName string, items []T, notUpdateColumn, updateColumn []string) (string, []interface{}) {
+func BuildBulkCreateSQLOnDuplicate[T IModel](tableName string, items []T, notUpdateColumn, updateColumn []string) (string, []interface{}) {
 	if len(notUpdateColumn) == 0 && len(updateColumn) == 0 {
-		return BuildBulkInsert(tableName, items)
+		return BuildBulkCreate(tableName, items)
 	}
 
 	itemsInterface := ToInterfaceSlice(items)
@@ -96,6 +102,24 @@ func BuildBulkInsertSQLOnDuplicate[T IModel](tableName string, items []T, notUpd
 	query := fmt.Sprintf("INSERT INTO `%s` (%s) VALUES %s ON DUPLICATE KEY UPDATE %s",
 		tableName, cols.String(), strings.Join(placeHolder, ","), strings.Join(updateQuery, ","))
 	return query, vals
+}
+
+func BuildCreateOnduplicateWithAdd(tablename string, insertData map[string]interface{}, addData map[string]interface{}) (string, []any) {
+	cols, ph, params := BuildInsertParams(insertData)
+	query := strings.Builder{}
+	query.WriteString(fmt.Sprintf("INSERT %s (%s) VALUES(%s)", SpecialField(tablename), cols, ph))
+	if len(addData) > 0 {
+		query.WriteString(" ON DUPLICATE KEY UPDATE ")
+		keys := make([]string, 0, len(addData))
+		for k, v := range addData {
+			// set k = k + ?
+			keys = append(keys, fmt.Sprintf(" set %s = %s + ? ", k, k))
+			params = append(params, v)
+		}
+		query.WriteString(strings.Join(keys, ","))
+	}
+	qStr := query.String()
+	return qStr, params
 }
 
 // MakeOnDuplicateSQL ...

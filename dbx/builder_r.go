@@ -1,11 +1,39 @@
 package dbx
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 
 	"github.com/hilaily/kit/stringx"
 )
+
+// ReadCols
+// Example: SELECT c1,c2 FROM table WHERE c2=?
+func BuildReadCols(tableName string, selectCols []string, where map[string]interface{}) (string, []any) {
+	query := fmt.Sprintf("SELECT %s FROM %s", BuildColsParams(selectCols), SpecialField(tableName))
+	params := make([]interface{}, 0)
+	ph := ""
+	if len(where) > 0 {
+		ph, params = BuildWhereParams(where)
+		query += " WHERE " + ph
+	}
+	return query, params
+}
+
+// ReaPage 分页的查询语句
+func BuildReadPage(tableName string, page, pageSize int, slectCols []string, where map[string]interface{}) (string, []any) {
+	query := fmt.Sprintf("SELECT %s FROM %s", BuildColsParams(slectCols), SpecialField(tableName))
+	params := make([]interface{}, 0)
+	ph := ""
+	if len(where) > 0 {
+		ph, params = BuildWhereParams(where)
+		query += " WHERE " + ph
+	}
+	query += " LIMIT ?, ?"
+	params = append(params, page-1, pageSize)
+	return query, params
+}
 
 // BuildWhereParams 构造 where 部分 sql 语句
 // Return string for example: `f1` = ? AND `f2` = ? AND `f3` = ?
