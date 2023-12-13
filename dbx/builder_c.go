@@ -2,7 +2,6 @@ package dbx
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 )
 
@@ -19,12 +18,10 @@ func BuildCreate(tableName string, data map[string]interface{}) (string, []any) 
 // GetBulkInsertSQL gen bulk insert sql
 // NOTE: items is a slice, and the element must implement IModel
 // INSERT INTO user (uid, name, money) VALUES (77, "name1", 77), (88, "name2", 88);
-func BuildBulkCreate[T IModel](tableName string, items []T) (string, []interface{}) {
-	itemsInterface := ToInterfaceSlice(items)
-	if len(itemsInterface) == 0 {
+func BuildBulkCreate[T IModel](tableName string, data []T) (string, []interface{}) {
+	if len(data) == 0 {
 		return "", nil
 	}
-	data := make([]IModel, len(itemsInterface))
 	fields, _ := data[0].Fields()
 	cols := strings.Builder{}
 	onePH := strings.Builder{}
@@ -53,23 +50,11 @@ func BuildBulkCreate[T IModel](tableName string, items []T) (string, []interface
 // NOTE: items is a slice, and the element must implement IModel
 // SQL 示例
 // INSERT INTO user (uid, name, money) VALUES (77, "name1", 77), (88, "name2", 88) ON DUPLICATE KEY UPDATE money=money, `name`=VALUES(`name`);
-func BuildBulkCreateSQLOnDuplicate[T IModel](tableName string, items []T, notUpdateColumn, updateColumn []string) (string, []interface{}) {
+func BuildBulkCreateSQLOnDuplicate[T IModel](tableName string, data []T, notUpdateColumn, updateColumn []string) (string, []interface{}) {
 	if len(notUpdateColumn) == 0 && len(updateColumn) == 0 {
-		return BuildBulkCreate(tableName, items)
+		return BuildBulkCreate(tableName, data)
 	}
 
-	itemsInterface := ToInterfaceSlice(items)
-	if len(itemsInterface) == 0 {
-		return "", nil
-	}
-	data := make([]IModel, len(itemsInterface))
-	var ok bool
-	for k := range itemsInterface {
-		data[k], ok = itemsInterface[k].(IModel)
-		if !ok {
-			panic("[curd], item must implement IModel")
-		}
-	}
 	fields, _ := data[0].Fields()
 	cols := strings.Builder{}
 	onePH := strings.Builder{}
@@ -132,27 +117,6 @@ func BuildOnDuplicateSQL(table string, insert map[string]interface{}, update map
 	whereSQL, whereParams := BuildKeyVal(update, ",")
 	b.WriteString(whereSQL)
 	return b.String(), append(insertParams, whereParams...)
-}
-
-func ToInterfaceSlice(slice interface{}) []interface{} {
-	s := reflect.ValueOf(slice)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
-	}
-
-	// Keep the distinction between nil and empty slice input
-	if s.IsNil() {
-		return nil
-	}
-
-	ret := make([]interface{}, s.Len())
-
-	for i := 0; i < s.Len(); i++ {
-		// TODO: if s.Index(i) is nil, should set nil, instead of {type: type, val: nil}
-		ret[i] = s.Index(i).Interface()
-	}
-
-	return ret
 }
 
 // BuildInsertSQL
