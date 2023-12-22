@@ -1,5 +1,25 @@
 package listx
 
+// Insert inserts an element into a slice at a specified index.
+// Note: If the index is out of range, it will panic.
+func Insert[T any](slice []T, index int, value T) []T {
+	if index < 0 || index > len(slice) {
+		panic("index out of range")
+	}
+	slice = append(slice[:index+1], slice[index:]...) // Step 1
+	slice[index] = value                              // Step 2
+	return slice
+}
+
+// Remove removes an element from a slice at a specified index.
+// Note: If the index is out of range, it will panic.
+func Remove[T any](slice []T, index int) []T {
+	if index < 0 || index >= len(slice) {
+		panic("index out of range")
+	}
+	return append(slice[:index], slice[index+1:]...) // Step 1
+}
+
 func Index[E comparable](list []E, element E) int {
 	for i, vs := range list {
 		if element == vs {
