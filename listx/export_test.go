@@ -30,3 +30,11 @@ func TestToMap(t *testing.T) {
 	arr1 := []int{1, 2}
 	t.Log(ToMap(arr1))
 }
+
+func TestSub(t *testing.T) {
+	arr := []int{0, 1, 2, 3, 4, 5}
+	assert.Equal(t, Sub(arr, 1, 3), []int{1, 2})
+	assert.Equal(t, Sub(arr, -1, 3), []int{0, 1, 2})
+	assert.Equal(t, Sub(arr, -1, 10), arr)
+	assert.Panics(t, func() { Sub(arr, 5, 2) })
+}

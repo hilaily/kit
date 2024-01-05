@@ -155,3 +155,20 @@ type Range struct {
 	Start int
 	End   int
 }
+
+func Sub[T any](list []T, start, end int) []T {
+	if start > end {
+		panic("listx.Sub, start is greater than end")
+	}
+	l := len(list)
+	if l == 0 {
+		return list
+	}
+	if start < 0 {
+		start = 0
+	}
+	if end > l {
+		end = l
+	}
+	return list[start:end]
+}
